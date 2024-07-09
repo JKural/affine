@@ -169,3 +169,22 @@ TEST(IntersectionTest, planeWithPlane)
                affine::Equal_to_precision(1e-14));
   EXPECT_EQ(intersection->dimension(), 1);
 }
+
+TEST(IntersectionTest, intervals)
+{
+  using IPoint2D = capd::vectalg::Vector<capd::DInterval, 2>;
+  const auto ielement_test_2d = std::mem_fn(&affine::Affine_space<capd::DInterval, 2>::element<affine::IApprox_equal>);
+  const auto ihas_value_test_2d = std::mem_fn(&std::optional<affine::Affine_space<capd::DInterval, 2>>::has_value);
+  const IPoint2D p0{0.0, 1.0};
+  const IPoint2D p1{1.0, 0.1};
+  const IPoint2D p2{0.0, 0.0};
+  const IPoint2D p3{1.0, 1.0};
+  const auto space0 = affine::Affine_space<capd::DInterval, 2>::spanning_space({p0, p1}, affine::IApprox_equal());
+  const auto space1 = affine::Affine_space<capd::DInterval, 2>::spanning_space({p2, p3}, affine::IApprox_equal());
+
+  const auto intersection = affine::intersection(space0, space1, affine::IApprox_equal());
+  EXPECT_PRED1(ihas_value_test_2d, intersection);
+  EXPECT_PRED3(ielement_test_2d, space0, intersection->point(), affine::IApprox_equal());
+  EXPECT_PRED3(ielement_test_2d, space1, intersection->point(), affine::IApprox_equal());
+  EXPECT_EQ(intersection->dimension(), 0);
+}

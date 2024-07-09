@@ -41,4 +41,19 @@ private:
   double eps_ = 1e-15;
 };
 
+class IApprox_equal
+{
+public:
+  IApprox_equal() = default;
+
+  template<class T, class U>
+  bool operator()(const T& lhs, const U& rhs) const
+  {
+    if (lhs == rhs)
+      return true;
+    
+    return capd::intervals::isSingular(lhs - rhs);
+  }
+};
+
 } // namespace affine
