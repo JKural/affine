@@ -12,7 +12,7 @@
 #include <capd/capdlib.h>
 #pragma GCC diagnostic pop
 
-#include "detail/affine_detail.h"
+#include "affine/detail/affine_detail.h"
 
 namespace affine {
 

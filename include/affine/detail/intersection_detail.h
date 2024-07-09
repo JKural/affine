@@ -2,8 +2,8 @@
 
 #include <optional>
 
-#include "affine.h"
-#include "affine_detail.h"
+#include "affine/affine_space.h"
+#include "affine/detail/affine_detail.h"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"

@@ -4,8 +4,8 @@
 #include <functional>
 #include <optional>
 
-#include "affine.h"
-#include "detail/intersection_detail.h"
+#include "affine/affine_space.h"
+#include "affine/detail/intersection_detail.h"
 
 namespace affine {
 

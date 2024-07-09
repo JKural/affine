@@ -11,9 +11,7 @@
 #include <capd/capdlib.h>
 #pragma GCC diagnostic pop
 
-#include "affine.h"
-#include "comparisons.h"
-#include "intersection.h"
+#include "affine/affine.h"
 
 namespace {
 
