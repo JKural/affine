@@ -1,10 +1,11 @@
+#include <gtest/gtest.h>
+
 #include <array>
 #include <cmath>
 #include <functional>
 #include <list>
 #include <stdexcept>
 
-#include <gtest/gtest.h>
 // skips -Woverloaded-virtual warnings for capd library
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
@@ -12,21 +13,7 @@
 #pragma GCC diagnostic pop
 
 #include "affine/affine.h"
-
-namespace {
-
-using Point1D = capd::vectalg::Vector<double, 1>;
-using Point2D = capd::vectalg::Vector<double, 2>;
-using Point3D = capd::vectalg::Vector<double, 3>;
-
-const auto element_test_1d = std::mem_fn(
-  &affine::Affine_space<double, 1>::element<affine::Equal_to_precision>);
-const auto element_test_2d = std::mem_fn(
-  &affine::Affine_space<double, 2>::element<affine::Equal_to_precision>);
-const auto element_test_3d = std::mem_fn(
-  &affine::Affine_space<double, 3>::element<affine::Equal_to_precision>);
-
-} // namespace
+#include "./test_utils.h"
 
 TEST(ElementTest, point)
 {
@@ -37,13 +24,13 @@ TEST(ElementTest, point)
   const affine::Affine_space space_1d = p0_1d;
   const affine::Affine_space space_3d = p0_3d;
 
-  EXPECT_PRED3(element_test_1d, space_1d, p0_1d, affine::Equal_to_precision());
-  EXPECT_PRED3(std::not_fn(element_test_1d),
+  EXPECT_PRED3(element_test, space_1d, p0_1d, affine::Equal_to_precision());
+  EXPECT_PRED3(std::not_fn(element_test),
                space_1d,
                p1_1d,
                affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_3d, space_3d, p0_3d, affine::Equal_to_precision());
-  EXPECT_PRED3(std::not_fn(element_test_3d),
+  EXPECT_PRED3(element_test, space_3d, p0_3d, affine::Equal_to_precision());
+  EXPECT_PRED3(std::not_fn(element_test),
                space_3d,
                p1_3d,
                affine::Equal_to_precision());
@@ -71,23 +58,23 @@ TEST(ElementTest, line)
   const affine::Affine_space space_3d(
     p0_3d, std::vector{ p1_3d }, affine::Equal_to_precision());
 
-  EXPECT_PRED3(element_test_1d,
+  EXPECT_PRED3(element_test,
                space_1d,
                p0_1d + t_1 * p1_1d,
                affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_2d,
+  EXPECT_PRED3(element_test,
                space_2d,
                p0_2d + t_2 * p1_2d,
                affine::Equal_to_precision());
-  EXPECT_PRED3(std::not_fn(element_test_2d),
+  EXPECT_PRED3(std::not_fn(element_test),
                space_2d,
                p0_2d + s_2 * p2_2d,
                affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_3d,
+  EXPECT_PRED3(element_test,
                space_3d,
                p0_3d + t_3 * p1_3d,
                affine::Equal_to_precision(1e-14));
-  EXPECT_PRED3(std::not_fn(element_test_3d),
+  EXPECT_PRED3(std::not_fn(element_test),
                space_3d,
                p0_3d + s_3 * p2_3d,
                affine::Equal_to_precision());
@@ -106,15 +93,15 @@ TEST(ElementTest, plane)
   const double r = 2.03547;
   const affine::Affine_space space(
     p0, std::vector{ p1, p2 }, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_3d,
+  EXPECT_PRED3(element_test,
                space,
                p0 + t_0 * p1 + s_0 * p2,
                affine::Equal_to_precision(1e-14));
-  EXPECT_PRED3(element_test_3d,
+  EXPECT_PRED3(element_test,
                space,
                p0 + t_1 * p1 + s_1 * p2,
                affine::Equal_to_precision(1e-14));
-  EXPECT_PRED3(std::not_fn(element_test_3d),
+  EXPECT_PRED3(std::not_fn(element_test),
                space,
                p0 + r * p3,
                affine::Equal_to_precision());

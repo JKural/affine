@@ -1,24 +1,22 @@
+#include <gtest/gtest.h>
+
 #include <array>
 #include <cmath>
 #include <functional>
 #include <list>
+#include <ranges>
 #include <stdexcept>
 
-#include <gtest/gtest.h>
 // skips -Woverloaded-virtual warnings for capd library
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
 #include <capd/capdlib.h>
 #pragma GCC diagnostic pop
 
+#include "./test_utils.h"
 #include "affine/affine.h"
 
 namespace {
-
-using Point1D = capd::vectalg::Vector<double, 1>;
-using Point2D = capd::vectalg::Vector<double, 2>;
-using Point3D = capd::vectalg::Vector<double, 3>;
-using Point4D = capd::vectalg::Vector<double, 4>;
 
 bool
 implicit_convertion_test(const affine::Affine_space<double, 4>& /* unused */)
@@ -36,12 +34,12 @@ TEST(ConstructorTest, defaultConstructor)
   EXPECT_EQ(space_1d.dimension(), 0);
   EXPECT_EQ(space_1d.ambient_dimension(), 1);
   EXPECT_EQ(space_1d.point(), Point1D());
-  EXPECT_PRED1(std::mem_fn(&std::vector<Point1D>::empty), space_1d.base());
+  EXPECT_PRED1(std::ranges::empty, space_1d.base());
 
   EXPECT_EQ(space_3d.dimension(), 0);
   EXPECT_EQ(space_3d.ambient_dimension(), 3);
   EXPECT_EQ(space_3d.point(), Point3D());
-  EXPECT_PRED1(std::mem_fn(&std::vector<Point3D>::empty), space_3d.base());
+  EXPECT_PRED1(std::ranges::empty, space_3d.base());
 }
 
 TEST(ConstructorTest, fromPoint)
@@ -54,17 +52,17 @@ TEST(ConstructorTest, fromPoint)
   EXPECT_EQ(space_1d.dimension(), 0);
   EXPECT_EQ(space_1d.ambient_dimension(), 1);
   EXPECT_EQ(space_1d.point(), Point1D{ 1.0 });
-  EXPECT_PRED1(std::mem_fn(&std::vector<Point1D>::empty), space_1d.base());
+  EXPECT_PRED1(std::ranges::empty, space_1d.base());
 
   EXPECT_EQ(space_2d.dimension(), 0);
   EXPECT_EQ(space_2d.ambient_dimension(), 2);
   EXPECT_EQ(space_2d.point(), p_2d);
-  EXPECT_PRED1(std::mem_fn(&std::vector<Point2D>::empty), space_2d.base());
+  EXPECT_PRED1(std::ranges::empty, space_2d.base());
 
   EXPECT_EQ(space_3d.dimension(), 0);
   EXPECT_EQ(space_3d.ambient_dimension(), 3);
   EXPECT_EQ(space_3d.point(), (Point3D{ 1.0, 2.0, 3.0 }));
-  EXPECT_PRED1(std::mem_fn(&std::vector<Point3D>::empty), space_3d.base());
+  EXPECT_PRED1(std::ranges::empty, space_3d.base());
 
   EXPECT_TRUE(implicit_convertion_test(Point4D{ 1.0, 2.0, 3.0, 4.0 }));
 }

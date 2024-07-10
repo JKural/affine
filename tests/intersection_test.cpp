@@ -1,10 +1,11 @@
+#include <gtest/gtest.h>
+
 #include <array>
 #include <cmath>
 #include <functional>
 #include <list>
 #include <stdexcept>
 
-#include <gtest/gtest.h>
 // skips -Woverloaded-virtual warnings for capd library
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
@@ -12,28 +13,8 @@
 #pragma GCC diagnostic pop
 
 #include "affine/affine.h"
+#include "./test_utils.h"
 
-namespace {
-
-using Point1D = capd::vectalg::Vector<double, 1>;
-using Point2D = capd::vectalg::Vector<double, 2>;
-using Point3D = capd::vectalg::Vector<double, 3>;
-
-const auto element_test_1d = std::mem_fn(
-  &affine::Affine_space<double, 1>::element<affine::Equal_to_precision>);
-const auto element_test_2d = std::mem_fn(
-  &affine::Affine_space<double, 2>::element<affine::Equal_to_precision>);
-const auto element_test_3d = std::mem_fn(
-  &affine::Affine_space<double, 3>::element<affine::Equal_to_precision>);
-
-const auto has_value_test_1d =
-  std::mem_fn(&std::optional<affine::Affine_space<double, 1>>::has_value);
-const auto has_value_test_2d =
-  std::mem_fn(&std::optional<affine::Affine_space<double, 2>>::has_value);
-const auto has_value_test_3d =
-  std::mem_fn(&std::optional<affine::Affine_space<double, 3>>::has_value);
-
-} // namespace
 
 TEST(IntersectionTest, pointWithPoint)
 {
@@ -54,12 +35,12 @@ TEST(IntersectionTest, pointWithPoint)
     intersection(space0_2d, space0_2d, affine::Equal_to_precision());
   const auto intersection1_2d =
     intersection(space0_2d, space1_2d, affine::Equal_to_precision());
-  EXPECT_PRED1(has_value_test_1d, intersection0_1d);
+  EXPECT_PRED1(has_value_test, intersection0_1d);
   EXPECT_EQ(intersection0_1d->point(), space0_1d.point());
-  EXPECT_PRED1(std::not_fn(has_value_test_1d), intersection1_1d);
-  EXPECT_PRED1(has_value_test_2d, intersection0_2d);
+  EXPECT_PRED1(std::not_fn(has_value_test), intersection1_1d);
+  EXPECT_PRED1(has_value_test, intersection0_2d);
   EXPECT_EQ(intersection0_2d->point(), space0_2d.point());
-  EXPECT_PRED1(std::not_fn(has_value_test_2d), intersection1_2d);
+  EXPECT_PRED1(std::not_fn(has_value_test), intersection1_2d);
 }
 
 TEST(IntersectionTest, lineWithLine)
@@ -85,23 +66,23 @@ TEST(IntersectionTest, lineWithLine)
     intersection(space0_2d, space1_2d, affine::Equal_to_precision());
   const auto intersection_3d =
     intersection(space0_3d, space1_3d, affine::Equal_to_precision());
-  EXPECT_PRED1(has_value_test_2d, intersection_2d);
-  EXPECT_PRED3(element_test_2d,
+  EXPECT_PRED1(has_value_test, intersection_2d);
+  EXPECT_PRED3(element_test,
                space0_2d,
                intersection_2d->point(),
                affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_2d,
+  EXPECT_PRED3(element_test,
                space1_2d,
                intersection_2d->point(),
                affine::Equal_to_precision());
   EXPECT_EQ(intersection_2d->dimension(), 0);
 
-  EXPECT_PRED1(has_value_test_3d, intersection_3d);
-  EXPECT_PRED3(element_test_3d,
+  EXPECT_PRED1(has_value_test, intersection_3d);
+  EXPECT_PRED3(element_test,
                space0_3d,
                intersection_3d->point(),
                affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_3d,
+  EXPECT_PRED3(element_test,
                space1_3d,
                intersection_3d->point(),
                affine::Equal_to_precision());
@@ -122,12 +103,12 @@ TEST(IntersectionTest, lineWithPlane)
 
   const auto intersection =
     affine::intersection(space0, space1, affine::Equal_to_precision());
-  EXPECT_PRED1(has_value_test_3d, intersection);
-  EXPECT_PRED3(element_test_3d,
+  EXPECT_PRED1(has_value_test, intersection);
+  EXPECT_PRED3(element_test,
                space0,
                intersection->point(),
                affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_3d,
+  EXPECT_PRED3(element_test,
                space1,
                intersection->point(),
                affine::Equal_to_precision());
@@ -150,20 +131,20 @@ TEST(IntersectionTest, planeWithPlane)
 
   const auto intersection =
     affine::intersection(space0, space1, affine::Equal_to_precision());
-  EXPECT_PRED1(has_value_test_3d, intersection);
-  EXPECT_PRED3(element_test_3d,
+  EXPECT_PRED1(has_value_test, intersection);
+  EXPECT_PRED3(element_test,
                space0,
                intersection->point(),
                affine::Equal_to_precision(1e-14));
-  EXPECT_PRED3(element_test_3d,
+  EXPECT_PRED3(element_test,
                space0,
                intersection->point() + intersection->base(0),
                affine::Equal_to_precision(1e-14));
-  EXPECT_PRED3(element_test_3d,
+  EXPECT_PRED3(element_test,
                space1,
                intersection->point(),
                affine::Equal_to_precision(1e-14));
-  EXPECT_PRED3(element_test_3d,
+  EXPECT_PRED3(element_test,
                space1,
                intersection->point() + intersection->base(0),
                affine::Equal_to_precision(1e-14));

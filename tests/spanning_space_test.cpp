@@ -1,10 +1,11 @@
+#include <gtest/gtest.h>
+
 #include <array>
 #include <cmath>
 #include <functional>
 #include <list>
 #include <stdexcept>
 
-#include <gtest/gtest.h>
 // skips -Woverloaded-virtual warnings for capd library
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
@@ -12,21 +13,7 @@
 #pragma GCC diagnostic pop
 
 #include "affine/affine.h"
-
-namespace {
-
-using Point1D = capd::vectalg::Vector<double, 1>;
-using Point2D = capd::vectalg::Vector<double, 2>;
-using Point3D = capd::vectalg::Vector<double, 3>;
-
-const auto element_test_1d = std::mem_fn(
-  &affine::Affine_space<double, 1>::element<affine::Equal_to_precision>);
-const auto element_test_2d = std::mem_fn(
-  &affine::Affine_space<double, 2>::element<affine::Equal_to_precision>);
-const auto element_test_3d = std::mem_fn(
-  &affine::Affine_space<double, 3>::element<affine::Equal_to_precision>);
-
-} // namespace
+#include "./test_utils.h"
 
 TEST(SpanningSpaceTest, onePoint)
 {
@@ -39,9 +26,9 @@ TEST(SpanningSpaceTest, onePoint)
     { p0_2d }, affine::Equal_to_precision());
   const auto space_3d = affine::Affine_space<double, 3>::spanning_space(
     { p0_3d }, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_1d, space_1d, p0_1d, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_2d, space_2d, p0_2d, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_3d, space_3d, p0_3d, affine::Equal_to_precision());
+  EXPECT_PRED3(element_test, space_1d, p0_1d, affine::Equal_to_precision());
+  EXPECT_PRED3(element_test, space_2d, p0_2d, affine::Equal_to_precision());
+  EXPECT_PRED3(element_test, space_3d, p0_3d, affine::Equal_to_precision());
   EXPECT_EQ(space_1d.dimension(), 0);
   EXPECT_EQ(space_2d.dimension(), 0);
   EXPECT_EQ(space_3d.dimension(), 0);
@@ -61,13 +48,13 @@ TEST(SpanningSpaceTest, twoPoints)
     { p0_2d, p1_2d }, affine::Equal_to_precision());
   const auto space_3d = affine::Affine_space<double, 3>::spanning_space(
     { p0_3d, p1_3d }, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_1d, space_1d, p0_1d, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_2d, space_2d, p0_2d, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_3d, space_3d, p0_3d, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_1d, space_1d, p1_1d, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_2d, space_2d, p1_2d, affine::Equal_to_precision());
+  EXPECT_PRED3(element_test, space_1d, p0_1d, affine::Equal_to_precision());
+  EXPECT_PRED3(element_test, space_2d, p0_2d, affine::Equal_to_precision());
+  EXPECT_PRED3(element_test, space_3d, p0_3d, affine::Equal_to_precision());
+  EXPECT_PRED3(element_test, space_1d, p1_1d, affine::Equal_to_precision());
+  EXPECT_PRED3(element_test, space_2d, p1_2d, affine::Equal_to_precision());
   EXPECT_PRED3(
-    element_test_3d, space_3d, p1_3d, affine::Equal_to_precision(1e-14));
+    element_test, space_3d, p1_3d, affine::Equal_to_precision(1e-14));
   EXPECT_EQ(space_1d.dimension(), 1);
   EXPECT_EQ(space_2d.dimension(), 1);
   EXPECT_EQ(space_3d.dimension(), 1);
@@ -80,8 +67,8 @@ TEST(SpanningSpaceTest, threePoints)
   const Point3D p2_3d{ -12.0, 6.0, 6.0 };
   const auto space_3d = affine::Affine_space<double, 3>::spanning_space(
     { p0_3d, p1_3d, p2_3d }, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_3d, space_3d, p0_3d, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_3d, space_3d, p1_3d, affine::Equal_to_precision());
-  EXPECT_PRED3(element_test_3d, space_3d, p2_3d, affine::Equal_to_precision());
+  EXPECT_PRED3(element_test, space_3d, p0_3d, affine::Equal_to_precision());
+  EXPECT_PRED3(element_test, space_3d, p1_3d, affine::Equal_to_precision());
+  EXPECT_PRED3(element_test, space_3d, p2_3d, affine::Equal_to_precision());
   EXPECT_EQ(space_3d.dimension(), 2);
 }
