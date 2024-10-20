@@ -25,7 +25,7 @@ intersection(const Affine_space<ScalarT, AmbientDim>& lhs,
   switch (first.dimension()) {
     case 0: {
       switch (second.dimension()) {
-        case 1:
+        case 0:
           return detail::point_with_point_intersection(
             first, second, std::move(compare));
         default:
